@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <title>Music player</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/main.css">
+</head>
+<body>
+  <div class="player">
+    <!-- Dashboard -->
+    <div class="dashboard">
+      <!-- Header -->
+      <header>
+        <h4>Now playing:</h4>
+        <h2>String 57th & 9th</h2>
+      </header>
+  
+      <!-- CD -->
+      <div class="cd">
+        <div class="cd-thumb" style="background-image: url('https://th.bing.com/th/id/R.b04d2769a7e28a93e04d9cc01793c80f?rik=4j%2b64C5AT7qFKQ&pid=ImgRaw&r=0')">
+        </div>
+      </div>
+  
+      <!-- Control -->
+      <div class="control">
+        <div class="btn btn-repeat">
+          <i class="fas fa-redo"></i>
+        </div>
+        <div class="btn btn-prev">
+          <i class="fas fa-step-backward"></i>
+        </div>
+        <div class="btn btn-toggle-play">
+          <i class="fas fa-pause icon-pause"></i>
+          <i class="fas fa-play icon-play"></i>
+        </div>
+        <div class="btn btn-next">
+          <i class="fas fa-step-forward"></i>
+        </div>
+        <div class="btn btn-random">
+          <i class="fas fa-random"></i>
+        </div>
+      </div>
+  
+      <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+  
+      <audio id="audio" src=""></audio>
+    </div>
+  
+    <!-- Playlist -->
+    <div class="playlist">
+      
+    </div>
+  </div>
+  <script>
+    currentIndex = 0
+    const $ = document.querySelector.bind(document)
+    const $$ = document.querySelectorAll.bind(document)
+    const playlist = $('.playlist')
+    const app = {
+      songs: [
+        {
+          name: 'My Revolution',
+          singer: 'Miracle of Sound',
+          path: './assets/music/music.mp4',
+          image: 'https://th.bing.com/th/id/OIP.uN2GxzV63w6LgOVnGRIV2QHaEK?rs=1&pid=ImgDetMain'
+        },
+        {
+          name: 'Dream Again',
+          singer: 'Miracle of Sound',
+          path: './assets/music/music.mp4',
+          image: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/clans/4437469/241017c4597019faeb016fbf8ceb5ad96f9ffb4c.jpg'
+        },
+        {
+          name: 'Rebirth',
+          singer: 'Miracle of Sound',
+          path: './assets/music/music.mp4',
+          image: 'https://th.bing.com/th/id/OIP.r7Zn4g2dGFhAk6Le80MO5wAAAA?w=298&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7'
+        },
+        {
+          name: 'Fires Fade',
+          singer: 'Miracle of Sound',
+          path: './assets/music/music.mp4',
+          image: 'https://th.bing.com/th/id/OIP.yw4xF8sR3wx5_BZNO77YWgHaEo?w=291&h=182&c=7&r=0&o=5&dpr=1.3&pid=1.7'
+        },
+        {
+          name: 'Lady of Worlds',
+          singer: 'Miracle of Sound',
+          path: './assets/music/music.mp4',
+          image: 'https://th.bing.com/th/id/R.42eea7fa6a70aee7d49cd131bf69a13a?rik=%2fwKsQiNrwU1olA&pid=ImgRaw&r=0'
+        },
+        {
+          name: 'Hallowed Land',
+          singer: 'Miracle of Sound',
+          path: './assets/music/music.mp4',
+          image: 'https://th.bing.com/th/id/OIP.PhMqYaKb_e5WyDWgoN8AnAHaEK?w=275&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7'
+        },
+        {
+          name: 'Setting Sun',
+          singer: 'Miracle of Sound',
+          path: './assets/music/music.mp4',
+          image: 'https://th.bing.com/th/id/OIP.mAoODChTycWc5bkn9w5dQgHaEo?w=283&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7'
+        },
+      ],
+      render: function () {
+        const htmls = this.songs.map(song => {
+          return`
+            <div class="song">
+              <div class="thumb" style="background-image: url('${song.image}')">
+              </div>
+              <div class="body">
+                <h3 class="title">${song.name}</h3>
+                <p class="author">${song.singer}</p>
+              </div>
+              <div class="option">
+                <i class="fas fa-ellipsis-h"></i>
+             </div>
+            </div>
+          `
+        })
+        $('.playlist').innerHTML = htmls.join('\n')
+      },
+      handleEvents: function () {
+        const cd = $('.cd')
+        const cdWidth = cd.offsetWidth
+
+        document.onscroll = function() {
+           const scrollTop = window.scrollY || document.documentElement.scrollTop
+           const newCdWidth = cdWidth - scrollTop
+           console.log(scrollTop)
+           cd.style.width = newCdWidth > 0 ? newCdWidth + 'px' : 0
+           cd.style.opacity = newCdWidth / cdWidth
+          }
+      },
+      start: function () {
+        this.render()
+        this.handleEvents()
+      }
+
+    }
+    app.start()
+  </script>
+</body>
+</html>
