@@ -91,13 +91,15 @@ header h2 {
 }
 
 .control .btn {
-  color: #666;
+  color: var(--primary-color);
   padding: 18px;
   font-size: 18px;
 }
 
 .control .btn.active {
-  color: var(--primary-color);
+  color: white;
+  background-color: var(--primary-color);
+  border-radius: 75%;
 }
 
 .control .btn-toggle-play {
@@ -150,6 +152,7 @@ header h2 {
 
 .song.active {
   background-color: var(--primary-color);
+
 }
 
 .song:active {
