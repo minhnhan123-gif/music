@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Music Player</title>
   <title>Music player</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -57,52 +57,64 @@
     </div>
   </div>
   <script>
-    currentIndex = 0
+    
     const $ = document.querySelector.bind(document)
     const $$ = document.querySelectorAll.bind(document)
     const playlist = $('.playlist')
+    const heading = $('header h2')
+    const cdThumb = $('.cd-thumb')
+    const audio = $('#audio')
+    const cd = $('.cd')
+    const playBtn = $('.btn-toggle-play')
+    const player = $('.player')
+    const progress = $('#progress')
+    const prevBtn = $('.btn-prev')
+    const nextBtn = $('.btn-next')
+
     const app = {
+      currentIndex: 0,
+      isPlaying: false,
       songs: [
         {
           name: 'My Revolution',
           singer: 'Miracle of Sound',
-          path: './assets/music/music.mp4',
+          path: './assets/music/music.mp3',
           image: 'https://th.bing.com/th/id/OIP.uN2GxzV63w6LgOVnGRIV2QHaEK?rs=1&pid=ImgDetMain'
         },
         {
           name: 'Dream Again',
           singer: 'Miracle of Sound',
-          path: './assets/music/music.mp4',
+          path: './assets/music/music2.mp3',
           image: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/clans/4437469/241017c4597019faeb016fbf8ceb5ad96f9ffb4c.jpg'
         },
         {
           name: 'Rebirth',
           singer: 'Miracle of Sound',
-          path: './assets/music/music.mp4',
+          path: './assets/music/music3.mp3',
           image: 'https://th.bing.com/th/id/OIP.r7Zn4g2dGFhAk6Le80MO5wAAAA?w=298&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7'
         },
         {
           name: 'Fires Fade',
           singer: 'Miracle of Sound',
-          path: './assets/music/music.mp4',
+          path: './assets/music/music4.mp3',
           image: 'https://th.bing.com/th/id/OIP.yw4xF8sR3wx5_BZNO77YWgHaEo?w=291&h=182&c=7&r=0&o=5&dpr=1.3&pid=1.7'
         },
         {
           name: 'Lady of Worlds',
           singer: 'Miracle of Sound',
-          path: './assets/music/music.mp4',
+          path: './assets/music/music5.mp3',
           image: 'https://th.bing.com/th/id/R.42eea7fa6a70aee7d49cd131bf69a13a?rik=%2fwKsQiNrwU1olA&pid=ImgRaw&r=0'
         },
         {
           name: 'Hallowed Land',
           singer: 'Miracle of Sound',
-          path: './assets/music/music.mp4',
+          path: './assets/music/music6.mp3',
           image: 'https://th.bing.com/th/id/OIP.PhMqYaKb_e5WyDWgoN8AnAHaEK?w=275&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7'
         },
         {
           name: 'Setting Sun',
           singer: 'Miracle of Sound',
-          path: './assets/music/music.mp4',
+          path: './assets/music/music7.mp3',
           image: 'https://th.bing.com/th/id/OIP.mAoODChTycWc5bkn9w5dQgHaEo?w=283&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7'
         },
       ],
@@ -124,21 +136,114 @@
         })
         $('.playlist').innerHTML = htmls.join('\n')
       },
+      defineProperties: function () {
+        Object.defineProperty(this, 'currentSong', {
+          get: function () {
+            return this.songs[this.currentIndex]
+          }
+        })
+      },
       handleEvents: function () {
-        const cd = $('.cd')
+
         const cdWidth = cd.offsetWidth
 
+        // Xu ly CD 
+        const cdThumbAnimate = cdThumb.animate([
+          { transform : 'rotate(360deg)' }
+        ], {
+            duration: 10000, // 10 seconds
+            iterations: Infinity
+        })
+        cdThumbAnimate.pause()
+        
+        // Xử lý phóng to thu nhỏ CD
         document.onscroll = function() {
-           const scrollTop = window.scrollY || document.documentElement.scrollTop
-           const newCdWidth = cdWidth - scrollTop
-           console.log(scrollTop)
-           cd.style.width = newCdWidth > 0 ? newCdWidth + 'px' : 0
-           cd.style.opacity = newCdWidth / cdWidth
+          const scrollTop = window.scrollY || document.documentElement.scrollTop
+          const newCdWidth = cdWidth - scrollTop
+          cd.style.width = newCdWidth > 0 ? newCdWidth + 'px' : 0
+          cd.style.opacity = newCdWidth / cdWidth
+        }
+
+        // Xử lý khi click play
+        playBtn.onclick= function () {
+          if (app.isPlaying) {
+            audio.pause()
+          } else {
+            audio.play()
           }
+        }
+
+        // Khi bai hat dang phat
+        audio.onplay = function () {
+          app.isPlaying = true
+          player.classList.add('playing')
+          cdThumbAnimate.play()
+        }
+
+        // Khi bai hat khong phat
+        audio.onpause = function () {
+          app.isPlaying = false
+          player.classList.remove('playing')
+          cdThumbAnimate.pause()
+        }
+        
+        audio.ontimeupdate = function () {
+          if(audio.duration) {
+            const progressPercent = Math.floor(audio.currentTime / audio.duration * 100)
+            progress.value = progressPercent
+          }
+        }
+
+        // xu ly khi tua nhac 
+        progress.onchange = function (e) {
+          const seekTime = audio.duration / 100 * e.target.value
+          audio.currentTime = seekTime
+        }
+
+        // khi next song
+        nextBtn.onclick = function () {
+          app.nextSong()
+          audio.play()
+        }
+
+        prevBtn.onclick = function () {
+          app.prevSong()
+          audio.play()
+        }
+
+      },
+      loadCurrentSong: function () {
+        heading.textContent = this.currentSong.name
+        cdThumb.style.backgroundImage = `url('${this.currentSong.image}')`
+        audio.src = this.currentSong.path
+      },
+      nextSong: function () {
+        this.currentIndex++
+        if (this.currentIndex >= this.songs.length - 1) {
+          this.currentIndex = 0
+        }
+        this.loadCurrentSong()
+      },
+      prevSong: function () {
+        this.currentIndex--
+        if (this.currentIndex <= -1) {
+          this.currentIndex = this.songs.length - 1
+        }
+        this.loadCurrentSong()
       },
       start: function () {
-        this.render()
+        //Định nghĩa cho các thuộc tính
+        this.defineProperties()
+        
+        // Lắng nghe / xử lý các xự kiện DOM
         this.handleEvents()
+
+        // Tải thông tin bài hát đầu tiên vào UI khi tải trang
+        this.loadCurrentSong()
+
+        // Render bài hát
+        this.render()
+
       }
 
     }

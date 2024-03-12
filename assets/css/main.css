@@ -47,7 +47,7 @@ html {
   border-bottom: 1px solid #ebebeb;
   box-shadow: 0 0 20px #000000;
   border-radius: 5px;
-  background-image: linear-gradient(to top, black, white);
+  background-image: linear-gradient(to bottom, black, white);
 }
 
 /* HEADER */
@@ -62,7 +62,7 @@ header h4 {
 }
 
 header h2 {
-  color: var(--text-color);
+  color: var(--primary-color);
   font-size: 20px;
 }
 
